@@ -24,6 +24,17 @@ def upload_file(file, filename: str):
         unique_filename
     )
 
-    file_url = f"https://{AWS_BUCKET_NAME}.s3.{AWS_REGION}.amazonaws.com/{unique_filename}"
+    return unique_filename
 
-    return file_url
+
+def generate_presigned_url(filename: str, expires_in=3600):
+    url = s3_client.generate_presigned_url(
+        "get_object",
+        Params={
+            "Bucket": AWS_BUCKET_NAME,
+            "Key": filename,
+        },
+        ExpiresIn=expires_in,
+    )
+
+    return url

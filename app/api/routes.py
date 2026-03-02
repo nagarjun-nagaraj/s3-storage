@@ -1,14 +1,15 @@
 from fastapi import APIRouter, UploadFile, File
-from app.services.s3 import upload_file
+from app.services.s3 import upload_file, generate_presigned_url
 
 router = APIRouter()
 
 
 @router.post("/upload")
 async def upload(file: UploadFile = File(...)):
-    file_url = upload_file(file.file, file.filename)
+    filename = upload_file(file.file, file.filename)
+    url = generate_presigned_url(filename)
 
     return {
-        "filename": file.filename,
-        "url": file_url
+        "filename": filename,
+        "url": url
     }
