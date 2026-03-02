@@ -1,4 +1,5 @@
 import boto3
+import uuid
 from app.core.config import (
     AWS_ACCESS_KEY_ID,
     AWS_SECRET_ACCESS_KEY,
@@ -15,12 +16,14 @@ s3_client = boto3.client(
 
 
 def upload_file(file, filename: str):
+    unique_filename = f"{uuid.uuid4()}-{filename}"
+
     s3_client.upload_fileobj(
         file,
         AWS_BUCKET_NAME,
-        filename
+        unique_filename
     )
 
-    file_url = f"https://{AWS_BUCKET_NAME}.s3.{AWS_REGION}.amazonaws.com/{filename}"
+    file_url = f"https://{AWS_BUCKET_NAME}.s3.{AWS_REGION}.amazonaws.com/{unique_filename}"
 
     return file_url
